@@ -13,17 +13,37 @@ jobs:
         node-version: 21
     - run: npm install
     - run: npm test
+    # - name: Run Trivy vulnerability scanner in repo mode
+    #   uses: aquasecurity/trivy-action@0.20.0
+    #   with:
+    #     scan-type: 'fs'
+    #     ignore-unfixed: true
+    #     format: 'sarif'
+    #     output: 'trivy-results.sarif'
+    #     severity: 'CRITICAL'
+    # - name: print sarif
+    #   run: cat trivy-results.sarif
+    # - name: Upload Trivy scan results to GitHub Security tab
+    #   uses: github/codeql-action/upload-sarif@v2
+    #   with:
+    #     sarif_file: 'trivy-results.sarif'
     - name: Run Trivy vulnerability scanner in repo mode
       uses: aquasecurity/trivy-action@0.20.0
       with:
         scan-type: 'fs'
         ignore-unfixed: true
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+        output: trivy.txt
         severity: 'CRITICAL'
-    - name: print sarif
-      run: cat trivy-results.sarif
-    - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
-      with:
-        sarif_file: 'trivy-results.sarif'
+    - name: Publish Trivy Output to Summary
+      run: |
+        if [[ -s trivy.txt ]]; then
+          {
+            echo "### Security Output"
+            echo "<details><summary>Click to expand</summary>"
+            echo ""
+            echo '```terraform'
+            cat trivy.txt
+            echo '```'
+            echo "</details>"
+          } >> $GITHUB_STEP_SUMMARY
+        fi
