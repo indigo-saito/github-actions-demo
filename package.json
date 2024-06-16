@@ -23,7 +23,7 @@
   },
   "overrides": {
     "mocha": {
-      "minimist": "^1.2.6"
+      "minimist": "^1.2.5"
     }
   },
   "scripts": {

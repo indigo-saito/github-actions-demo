@@ -32,6 +32,7 @@ jobs:
       with:
         scan-type: 'fs'
         ignore-unfixed: true
+        hide-progress: true
         output: trivy.txt
         severity: 'CRITICAL'
     - name: Publish Trivy Output to Summary
